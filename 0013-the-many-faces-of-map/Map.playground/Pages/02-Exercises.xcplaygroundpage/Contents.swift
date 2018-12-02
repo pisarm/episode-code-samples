@@ -10,7 +10,20 @@
     Does it satisfy `map(id) == id`?
 
  */
-// TODO
+func map<K, V, W>(_ f: @escaping (V) -> W) -> ([K: V]) -> [K: W] {
+    return { kv in
+        var result: [K: W] = [:]
+
+        kv.forEach { key, value in
+            result[key] = f(value)
+        }
+
+        return result
+    }
+}
+
+["fisk": 1, "hest": 2, "hund": 3]
+    |> map(incr)
 /*:
  2. Implement the following function:
 
@@ -20,7 +33,21 @@
 
     We do not call this `map` because it turns out to not satisfy the properties of `map` that we saw in this episode. What is it about the `Set` type that makes it subtly different from `Array`, and how does that affect the genericity of the `map` function?
  */
-// TODO
+func transformSet<A, B>(_ f: @escaping (A) -> B) -> (Set<A>) -> Set<B> {
+    return { set in
+        var result: Set<B> = []
+
+        set.forEach { result.insert(f($0)) }
+
+        return result
+    }
+}
+
+func strCntConcat(_ str: String) -> String { return "\(str): \(str.count)" }
+
+["fjæsing", "torsk", "laks"]
+    |> transformSet(strCntConcat)
+
 /*:
  3. Recall that one of the most useful properties of `map` is the fact that it distributes over compositions, _i.e._ `map(f >>> g) == map(f) >>> map(g)` for any functions `f` and `g`. Using the `transformSet` function you defined in a previous example, find an example of functions `f` and `g` such that:
 
